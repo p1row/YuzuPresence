@@ -1,0 +1,7 @@
+Id: YuzuPresence_Playnite
+Name: Yuzu Presence
+Author: Yuzu Presence for Playnite
+Version: 3.0.0
+Module: YuzuPresence.dll
+Type: GenericPlugin
+Icon: icon.png

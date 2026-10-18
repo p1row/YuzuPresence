@@ -1,0 +1,101 @@
+<UserControl x:Class="YuzuPresence.YuzuPresenceSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <Style x:Key="Section" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Margin" Value="0,22,0,10"/>
+        </Style>
+        <Style x:Key="Hint" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource TextBrushDarker}"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="0,2,0,10"/>
+        </Style>
+        <Style x:Key="Check" TargetType="CheckBox">
+            <Setter Property="Margin" Value="0,5,0,5"/>
+        </Style>
+        <Style x:Key="Label" TargetType="TextBlock">
+            <Setter Property="Margin" Value="0,8,0,4"/>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20,10,20,20" MaxWidth="720" HorizontalAlignment="Left">
+
+            <!-- ============ Discord ============ -->
+            <TextBlock Text="Discord" Style="{StaticResource Section}" Margin="0,0,0,10"/>
+            <CheckBox Style="{StaticResource Check}" IsChecked="{Binding Settings.Enabled}"
+                      Content="Show Discord Rich Presence while a game is running"/>
+            <TextBlock Style="{StaticResource Label}" Text="Discord Application ID"/>
+            <TextBox Text="{Binding Settings.ClientId, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="320"/>
+            <TextBlock Style="{StaticResource Hint}"
+                       Text="Create an application at discord.com/developers/applications and paste its Application ID here. The game's own name is shown after 'Playing', so the application's name doesn't matter."/>
+            <Button Content="Test connection" Command="{Binding TestConnectionCommand}" HorizontalAlignment="Left" Padding="14,4"/>
+
+            <!-- ============ Text ============ -->
+            <TextBlock Text="What is shown" Style="{StaticResource Section}"/>
+            <TextBlock Style="{StaticResource Label}" Text="Header (after 'Playing')"/>
+            <TextBox Text="{Binding Settings.ActivityName, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Style="{StaticResource Label}" Text="First line"/>
+            <TextBox Text="{Binding Settings.Details, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Style="{StaticResource Label}" Text="Second line"/>
+            <TextBox Text="{Binding Settings.State, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Style="{StaticResource Label}" Text="Cover image tooltip"/>
+            <TextBox Text="{Binding Settings.LargeImageText, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Style="{StaticResource Hint}"
+                       Text="Placeholders: {name} {vndb_title} {original_title} {developer} {rating} {released} {length} {total_time} {platform} {source} {vndb}. Separate parts with '|' - a part whose placeholders are all empty is left out automatically."/>
+
+            <CheckBox Style="{StaticResource Check}" IsChecked="{Binding Settings.ShowElapsed}" Content="Show elapsed time (session timer)"/>
+            <CheckBox Style="{StaticResource Check}" IsChecked="{Binding Settings.ShowTotalPlaytime}" Content="Show total playtime ({total_time})"/>
+            <CheckBox Style="{StaticResource Check}" IsChecked="{Binding Settings.ShowRating}" Content="Show VNDB rating ({rating})"/>
+            <CheckBox Style="{StaticResource Check}" IsChecked="{Binding Settings.ShowDeveloper}" Content="Show developer ({developer})"/>
+            <CheckBox Style="{StaticResource Check}" IsChecked="{Binding Settings.ShowCover}" Content="Show VNDB cover image"/>
+            <CheckBox Style="{StaticResource Check}" IsChecked="{Binding Settings.ShowButton}" Content="Show 'View on VNDB' button"/>
+
+            <TextBlock Style="{StaticResource Label}" Text="Button text"/>
+            <TextBox Text="{Binding Settings.ButtonText, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="240"
+                     IsEnabled="{Binding Settings.ShowButton}"/>
+
+            <TextBlock Style="{StaticResource Label}" Text="Title language ({vndb_title})"/>
+            <ComboBox SelectedIndex="{Binding Settings.TitleLanguage}" HorizontalAlignment="Left" MinWidth="260">
+                <ComboBoxItem Content="Romanized"/>
+                <ComboBoxItem Content="Original (e.g. Japanese)"/>
+            </ComboBox>
+
+            <TextBlock Style="{StaticResource Label}" Text="Cover content filter"/>
+            <ComboBox SelectedIndex="{Binding Settings.CoverFilter}" HorizontalAlignment="Left" MinWidth="260"
+                      IsEnabled="{Binding Settings.ShowCover}">
+                <ComboBoxItem Content="Show all covers"/>
+                <ComboBoxItem Content="Hide explicit covers"/>
+                <ComboBoxItem Content="Hide suggestive and explicit covers"/>
+            </ComboBox>
+            <TextBlock Style="{StaticResource Hint}" Text="Uses the sexual / violence ratings VNDB gives each cover. Covers that are filtered out are simply not shown."/>
+
+            <!-- ============ When ============ -->
+            <TextBlock Text="When it is shown" Style="{StaticResource Section}"/>
+            <CheckBox Style="{StaticResource Check}" IsChecked="{Binding Settings.OnlyVndbGames}"
+                      Content="Only show presence for games that have a VNDB entry"/>
+            <CheckBox Style="{StaticResource Check}" IsChecked="{Binding Settings.SkipHiddenGames}"
+                      Content="Never show presence for hidden games"/>
+            <TextBlock Style="{StaticResource Label}" Text="Never show presence for games with this tag"/>
+            <TextBox Text="{Binding Settings.IgnoredTag, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="240"/>
+
+            <!-- ============ VNDB ============ -->
+            <TextBlock Text="VNDB" Style="{StaticResource Section}"/>
+            <CheckBox Style="{StaticResource Check}" IsChecked="{Binding Settings.UseVndb}"
+                      Content="Use VNDB for cover and game info"/>
+            <CheckBox Style="{StaticResource Check}" IsChecked="{Binding Settings.AutoLinkOnLaunch}"
+                      IsEnabled="{Binding Settings.UseVndb}"
+                      Content="Automatically add the VNDB link when a game without one is launched"/>
+            <CheckBox Style="{StaticResource Check}" IsChecked="{Binding Settings.AutoLinkOnLibraryUpdate}"
+                      IsEnabled="{Binding Settings.UseVndb}"
+                      Content="Automatically add VNDB links to newly added games after a library update"/>
+            <CheckBox Style="{StaticResource Check}" IsChecked="{Binding Settings.StrictMatching}"
+                      IsEnabled="{Binding Settings.UseVndb}"
+                      Content="Strict matching (only link when the title matches exactly)"/>
+            <TextBlock Style="{StaticResource Hint}"
+                       Text="With strict matching off, the top VNDB search result is linked even when the title differs, which can pick the wrong game."/>
+            <Button Content="Link all games to VNDB now" Command="{Binding LinkAllCommand}" HorizontalAlignment="Left" Padding="14,4"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
