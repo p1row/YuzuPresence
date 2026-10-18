@@ -291,7 +291,7 @@ namespace YuzuPresence
         private void LinkGame(Game game, string vndbId)
         {
             var url = "https://vndb.org/" + vndbId;
-            PlayniteApi.MainView.UIDispatcher.Invoke(() =>
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 if (game.Links == null) game.Links = new ObservableCollection<Link>();
                 var existing = game.Links.FirstOrDefault(l => l.Url != null && VndbUrl.IsMatch(l.Url));
